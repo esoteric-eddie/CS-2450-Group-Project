@@ -1,5 +1,5 @@
 "Joshua Eaton"
-
+#test push for Jackson
 #test dummy memory variable
 memory = ["1013", "2014", "1415", "4344"]
 
@@ -33,15 +33,19 @@ def exectue():
         match operation_code:
             case 10:
                 #Call READ
-                print("READ")
+		sim.memory[operand] = int(input("Enter a number: "))
+                #print("READ")
             case 11:
                 #Call WRITE
-                print("WRITE")
+		print(f"Output: {sim.memory[operand]}")
+                #print("WRITE")
             case 20:
                 #Call LOAD
-                print("LOAD")
+		sim.accumulator = sim.memory[operand]
+                #print("LOAD")
             case 20:
                 #Call STORE
+		sim.memory[operand] = sim.accumulator
                 print("STORE")
             case 30:
                 #Call ADD
