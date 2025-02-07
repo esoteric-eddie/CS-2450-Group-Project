@@ -16,10 +16,10 @@ class UVSim:
             for address, line in enumerate(file):
                 #Ensure instructions are properly formatted (four-digit signed decimal)
                 instruction = line.strip()
-                if len(instruction) <= 5 and (instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit()):
+                if instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit():
                     #Store instructions in memory starting at address 00
                     self.memory[address] = int(instruction)
-        
+
         #Initialize the program counter to 00 (starting execution at the first instruction)
         self.program_counter = 0
 
@@ -27,12 +27,18 @@ class UVSim:
     def fetch_word(self, memory_index):
         #memory should be whatever the name of the variable that our 0-99 memory array is called. return memory at index.
         word = self.memory[memory_index]
-        #set operation code to the first two numbers, operand to the last two numbers.
+
         word_str = str(word)
-        operation_code = int(word_str[:2])
-        operand = int(word_str[2:4])
-        #return operation code and operand
-        return [operation_code, operand]
+        if len(word_str) == 4:
+            #set operation code to the first two numbers, operand to the last two numbers.
+            operation_code = int(word_str[:2])
+            operand = int(word_str[2:4])
+            #return operation code and operand
+            return [operation_code, operand]
+        else:
+            operation_code = 99
+            operand = 99
+            return [operation_code, operand]
 
     def execute(self):
         #start at the first memory location, starting operation code is nothing, starting operand is nothing.
@@ -53,19 +59,15 @@ class UVSim:
                 case 10:
                     #Call READ
                     self.memory[operand] = int(input("Enter a number: "))
-                    #print("READ")
                 case 11:
                     #Call WRITE
                     print(f"Output: {self.memory[operand]}")
-                    #print("WRITE")
                 case 20:
                     #Call LOAD
                     self.accumulator = self.memory[operand]
-                    #print("LOAD")
                 case 21:
                     #Call STORE
                     self.memory[operand] = self.accumulator
-                    print("STORE")
                 case 30:
                     #Call ADD
                     print("ADD")
@@ -94,7 +96,7 @@ class UVSim:
                     #Call Halt function, but this code will stop executing anyways after halt because of while loop
                     print("HALT")
                 case default:
-                    print("Not an operation code")
+                    print("Command not valid.")
 
             #increment program_counter if increment counter is true
             if increment_counter == True:
