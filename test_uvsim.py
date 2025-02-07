@@ -1,16 +1,17 @@
 import pytest
 from UVSim import UVSim
 
-test_memory = [+1007,+1008,+2007,+3008,+2109,+1109,+4300,+0000,+0000,+0000,-99999]
+test_file1 = "Test1.txt"
+test_file_memory = [+1007,+1008,+2007,+3008,+2109,+1109,+4300,+0000,+0000,+0000,-99999]
 
-# -------- UVSIM TESTS --------
 @pytest.fixture
 def uvsim():
     """ Create instance of UVSim before each test """
     return UVSim()
 
+# -------- UVSIM TESTS --------
 def test_memory(uvsim):
-    """ Check if memory is initialize correctly """
+    """ Check if memory initializes correctly """
     assert len(uvsim.memory) == 100
     assert all(value == 0 for value in uvsim.memory)
 
@@ -20,35 +21,43 @@ def test_registers(uvsim):
     assert uvsim.program_counter == 0
     assert uvsim.instruction_register == 0
 
-def test_load_file(monkeypatch, tmp_path, uvsim):
-    """ Create a test file to check if files are read correctly """
-    # Create temp file with instructions
-    test_file = tmp_path / "test_program.txt"
-    test_file.write_text("+1007\n+2008\n+3109\n+4300\n")
-
-    # Mock user input to give filename
-    monkeypatch.setattr('builtins.input', lambda _: str(test_file))
+# -------- METHOD TESTS --------
+def test_load_file(uvsim, monkeypatch):
+    """ Check if test file is read correctly """
+    # Mock input to return test file
+    monkeypatch.setattr("builtins.input", lambda _: str(test_file1))
 
     uvsim.load_program()
 
-    # Check if memory loaded correctly
-    assert uvsim.memory[:4] == [1007, 2008, 3109, 4300]
+    assert uvsim.memory[:len(test_file_memory)] == test_file_memory
+
+def test_fetch_word(uvsim):
+    """ Test if memory is correctly broken into opcode and operand """
+    uvsim.memory[0] = 2010
+    opcode, operand = uvsim.fetch_word(0)
+    
+    assert opcode == 20
+    assert operand == 10
+
+def test_execute_halt(uvsim, capsys):
+    """ Test if execution stops if opcode 43 """
+    uvsim.memory[0] = 4300
+    uvsim.execute()
+
+    captured = capsys.readouterr()
+    assert "HALT" in captured.out
     assert uvsim.program_counter == 0
 
-# -------- FUNCTION TESTS --------
-def test_fetch_word():
+def test_execute_invalid_opcode(uvsim, capsys):
+    """ Test if invalid opcodes output message """
     pass
+    # uvsim.memory[0] = 9999
+    # uvsim.execute()
 
-def test_execution():
-    pass
-
-def test_invalid_opcode():
-    pass
+    # captured = capsys.readouterr()
+    # assert "Not an operation code" in captured.out
 
 # -------- OPERATION TESTS --------
-def test_load():
-    pass
-
 def test_store():
     pass
 
