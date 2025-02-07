@@ -48,7 +48,7 @@ class UVSim:
         operand = 00
         #increment the counter unless branch function, which sets this to false
         increment_counter = True
-        while operation_code != 43:
+        while operation_code != 43 or self.program_counter > 98:
             fetched_word = self.fetch_word(self.program_counter)
             operation_code = int(fetched_word[0])
             operand = int(fetched_word[1])
