@@ -70,31 +70,38 @@ class UVSim:
                     self.memory[operand] = self.accumulator
                 case 30:
                     #Call ADD
-                    print("ADD")
+                    self.accumulator += self.get_operand(operand)
                 case 31:
                     #Call SUBTRACT
-                    print("SUBTRACT")
+                    self.accumulator -= self.get_operand(operand)
                 case 32:
                     #Call MULTIPLY
-                    print("MULTIPY")
+                    self.accumulator *= self.get_operand(operand)
                 case 33:
                     #Call DIVIDE
-                    print("DIVIDE")
+                    divisor = self.get_operand(operand)
+                    if divisor == 0:
+                        print("ERROR: Division by zero. Execution halted.")
+                        exit(1)
+                    self.accumulator //= divisor
                 case 40:
                     #Call BRANCH
-                    print("BRANCH")
+                    self.program_counter = operand
                     increment_counter = False
                 case 41:
                     #Call BRANCHNEG
-                    print("BRANCHNEG")
+                    if self.accumulator < 0:
+                        self.program_counter = operand
                     increment_counter = False
                 case 42:
                     #Call BRANCHZERO
-                    print("BRANCHZERO")
+                    if self.accumulator == 0:
+                        self.program_counter = operand
                     increment_counter = False
                 case 43:
                     #Call Halt function, but this code will stop executing anyways after halt because of while loop
-                    print("HALT")
+                    print("Program halted.")
+                    break
                 case default:
                     print("Command not valid.")
 
