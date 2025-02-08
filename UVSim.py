@@ -87,17 +87,17 @@ class UVSim:
                 case 40:
                     #Call BRANCH
                     self.program_counter = operand
-                    increment_counter = False
+                    continue
                 case 41:
                     #Call BRANCHNEG
                     if self.accumulator < 0:
                         self.program_counter = operand
-                    increment_counter = False
+                        continue
                 case 42:
                     #Call BRANCHZERO
                     if self.accumulator == 0:
                         self.program_counter = operand
-                    increment_counter = False
+                        continue
                 case 43:
                     #Call Halt function, but this code will stop executing anyways after halt because of while loop
                     print("Program halted.")
