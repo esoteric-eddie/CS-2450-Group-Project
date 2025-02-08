@@ -39,7 +39,15 @@ class UVSim:
             operation_code = 99
             operand = 99
             return [operation_code, operand]
-
+    
+    def get_operand(self, operand):
+        """Ensure operand is within valid memory range (0-99)."""
+        if 0 <= operand < 100:
+            return self.memory[operand]
+        else:
+            print(f"ERROR: Memory access out of bounds (Address: {operand}).")
+            exit(1)  # Stop execution
+    
     def execute(self):
         #start at the first memory location, starting operation code is nothing, starting operand is nothing.
         #first two digits of word
