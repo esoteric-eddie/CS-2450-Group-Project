@@ -56,7 +56,7 @@ class UVSim:
         operand = 00
         #increment the counter unless branch function, which sets this to false
         increment_counter = True
-        while operation_code != 43 or self.program_counter > 98:
+        while operation_code != 43 and self.program_counter <= 98:
             fetched_word = self.fetch_word(self.program_counter)
             operation_code = int(fetched_word[0])
             operand = int(fetched_word[1])
@@ -110,7 +110,7 @@ class UVSim:
                     #Call Halt function, but this code will stop executing anyways after halt because of while loop
                     print("Program halted.")
                     break
-                case default:
+                case _:
                     print("Command not valid.")
 
             #increment program_counter if increment counter is true
