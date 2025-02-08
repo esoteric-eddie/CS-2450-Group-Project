@@ -45,7 +45,7 @@ def test_execute_halt(uvsim, capsys):
     uvsim.execute()
 
     captured = capsys.readouterr()
-    assert "HALT" in captured.out
+    assert "Program halted." in captured.out
     #assert uvsim.program_counter == 0
 
 def test_execute_invalid_opcode(uvsim, capsys):
@@ -111,7 +111,7 @@ def test_divide(uvsim):
 
     assert uvsim.accumulator == 4
 
-def test_divide_by_zero(uvsim):
+def test_divide_by_zero(uvsim, capsys):
     """Test DIVIDE by zero """
     uvsim.accumulator = 10
     uvsim.memory[10] = 0
@@ -119,8 +119,11 @@ def test_divide_by_zero(uvsim):
     uvsim.memory[0] = +3310  # Attempt to divide by zero
     uvsim.memory[1] = 4300
 
-    with pytest.raises(ZeroDivisionError):
+    with pytest.raises(SystemExit):
         uvsim.execute()
+
+    captured = capsys.readouterr()
+    assert "ERROR: Division by zero" in captured.out
 
 def test_branch(uvsim):
     """Test BRANCH operation """
