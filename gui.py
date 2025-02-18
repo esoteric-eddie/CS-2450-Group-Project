@@ -39,40 +39,8 @@ class SimGUI:
         self.out_output = tk.Entry(root, width=40, state='readonly')
         self.out_output.grid(row=3, column=1, padx=10, pady=5, columnspan=2)
 
-    def load_file(self):
-        """ Opens file dialog, sends file to Processor, and updates UI """
-        filename = filedialog.askopenfilename(title="Select a Text File", filetypes=[("Text Files", "*.txt")])
+    #needs a method to find a file and load it into UVSim.py
 
-        if filename:
-            success = self.processor.load_file(filename)  # Load file via processor
-
-            if success:
-                self.input_field.delete(0, tk.END)
-                self.input_field.insert(0, filename)
-
-                # Update UI fields
-                self.update_ui()
-            else:
-                self.out_output.config(state='normal')
-                self.out_output.delete(0, tk.END)
-                self.out_output.insert(0, "Error loading file")
-                self.out_output.config(state='readonly')
-
-    """ def update_ui(self):
-         '''Updates all output fields with processor data '''
-        self.pc_output.config(state='normal')
-        self.pc_output.delete(0, tk.END)
-        self.pc_output.insert(0, str(self.processor.get_pc()))
-        self.pc_output.config(state='readonly')
-
-        self.acc_output.config(state='normal')
-        self.acc_output.delete(0, tk.END)
-        self.acc_output.insert(0, str(self.processor.get_acc()))
-        self.acc_output.config(state='readonly')
-
-        self.out_output.config(state='normal')
-        self.out_output.delete(0, tk.END)
-        self.out_output.insert(0, self.processor.get_output())
-        self.out_output.config(state='readonly')  """
+    #needs a method to update UI as processing is occuring
         
         
