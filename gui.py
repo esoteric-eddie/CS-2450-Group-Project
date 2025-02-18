@@ -39,7 +39,7 @@ class SimGUI:
         self.out_output = tk.Entry(root, width=40, state='readonly')
         self.out_output.grid(row=3, column=1, padx=10, pady=5, columnspan=2)
 
-    #needs a method to find a file and load it into UVSim.py
+    #needs a method to find a file and load it into UVSim.py Either call it load_file to be comaptible with the previous code or change my previous code
 
     #needs a method to update UI as processing is occuring
         
