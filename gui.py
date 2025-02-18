@@ -1,10 +1,16 @@
-import pg as gui
+import tkinter as tk
 import UVSim
 
-class SimGUI(gui.window):
-    def __init__(self):
-        super().__init__("Simple GUI", size=(400,300))
-        self.sim = UVSim.UVsim() #Initializes UVSim within GUI window
+class SimGUI:
+    def __init__(self,master):
+        self.master = master
+        master.title("UVSim")
 
-        self.input_label = gui.Label(self, "Enter text file:")
-        self.input_field = gui.TextField(self)
+        self.label = tk.Label(master, text="Test!")
+        self.label.pack()
+
+        self.close_button = tk.Button(master, text="close", command=master.quit)
+        self.close_button.pack
+
+        
+        
