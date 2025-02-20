@@ -49,17 +49,7 @@ class SimGUI:
                 return
 
             try:
-                # Load file in UVSim
-                with open(file, 'r') as file:
-                    for address, line in enumerate(file):
-                        #Ensure instructions are properly formatted (four-digit signed decimal)
-                        instruction = line.strip()
-                        if instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit():
-                            #Store instructions in memory starting at address 00
-                            self.processor.memory[address] = int(instruction)
-
-                #Initialize the program counter to 00 (starting execution at the first instruction)
-                self.processor.program_counter = 0
+                self.processor.load_program(file)
 
                 # Update GUI fields
                 self.update_pc()

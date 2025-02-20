@@ -7,11 +7,9 @@ class UVSim:
         self.program_counter = 0       #Define a program counter (PC) to keep track of the current instruction address
         self.instruction_register = 0  #Set up an instruction register (IR) to hold the instruction being executed
 
-    ''' MOVED METHOD INTO GUI CLASS
-    def load_program(self):
+    def load_program(self, filename):
         """Load a BasicML program from a file into memory."""
         # Step 2: Read the Input Program
-        filename = input("Enter the name of the input file: ")  #Prompt the user for an input file containing BasicML instructions
         
         with open(filename, 'r') as file:
             for address, line in enumerate(file):
@@ -23,7 +21,7 @@ class UVSim:
 
         #Initialize the program counter to 00 (starting execution at the first instruction)
         self.program_counter = 0
-    '''
+
     #pass fetch a memory location, get the operation code
     def fetch_word(self, memory_index):
         #memory should be whatever the name of the variable that our 0-99 memory array is called. return memory at index.
