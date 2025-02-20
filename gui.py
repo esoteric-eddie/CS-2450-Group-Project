@@ -39,8 +39,58 @@ class SimGUI:
         self.out_output = tk.Entry(root, width=40, state='readonly')
         self.out_output.grid(row=3, column=1, padx=10, pady=5, columnspan=2)
 
-    #needs a method to find a file and load it into UVSim.py Either call it load_file to be comaptible with the previous code or change my previous code
+    # Method to find a file and load it into UVSim.py
+    def load_file(self):
+            """ Load inputed file into UVSim and update fields """
+            file = self.input_field.get().strip()
 
-    #needs a method to update UI as processing is occuring
+            if not file:
+                self.update_output("No file name entered.")
+                return
+
+            try:
+                # Load file in UVSim
+                with open(file, 'r') as file:
+                    for address, line in enumerate(file):
+                        #Ensure instructions are properly formatted (four-digit signed decimal)
+                        instruction = line.strip()
+                        if instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit():
+                            #Store instructions in memory starting at address 00
+                            self.processor.memory[address] = int(instruction)
+
+                #Initialize the program counter to 00 (starting execution at the first instruction)
+                self.processor.program_counter = 0
+
+                # Update GUI fields
+                self.update_pc()
+                self.update_accumulator()
+                self.update_output(f"Program loaded successfully.")
+
+            except FileNotFoundError:
+                self.update_output("Error: File not found.")
+            except Exception as e:
+                self.update_output(f"Error: {str(e)}")
+
+    # Methods to update UI as processing is occuring
+    def update_pc(self):
+        """ Update the program counter field in GUI """
+        self.pc_output.config(state='normal')
+        self.pc_output.delete(0, tk.END)
+        self.pc_output.insert(0, str(self.processor.program_counter))
+        self.pc_output.config(state='readonly')
+
+    def update_accumulator(self):
+        """ Update the accumulator field in GUI """
+        self.acc_output.config(state='normal')
+        self.acc_output.delete(0, tk.END)
+        self.acc_output.insert(0, str(self.processor.accumulator))
+        self.acc_output.config(state='readonly')
+
+    def update_output(self, message):
+        """ Update the output message field in GUI """
+        self.out_output.config(state='normal')
+        self.out_output.delete(0, tk.END)
+        self.out_output.insert(0, message)
+        self.out_output.config(state='readonly')
         
         
