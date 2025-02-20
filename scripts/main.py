@@ -1,4 +1,4 @@
-import src.UVSim as UVSim
+from src import UVSim
 
 def main():
     sim = UVSim.UVSim()
