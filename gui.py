@@ -39,6 +39,12 @@ class SimGUI:
         self.out_output = tk.Entry(root, width=40, state='readonly')
         self.out_output.grid(row=3, column=1, padx=10, pady=5, columnspan=2)
 
+        #User input value - needs an event added to it. 
+        self.input_entry = tk.Label(root, text="Input:")
+        self.input_entry.grid(row=4, column=0, padx=10, pady=5)
+        self.input_val = tk.Entry(root, width=40)
+        self.input_val.grid(row=4, column=1, padx=10, pady=5)
+        
     # Method to find a file and load it into UVSim.py
     def load_file(self):
             """ Load inputed file into UVSim and update fields """
