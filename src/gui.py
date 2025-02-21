@@ -49,11 +49,11 @@ class SimGUI:
         """Buttons"""
         # Load Button
         self.load_button = tk.Button(frame_btns, text="Load File", command=self.load_file)
-        self.load_button.grid(row=0, column=0)
+        self.load_button.grid(row=0, column=0, padx=5, sticky="e")
 
         # Run Button
         self.run_btn = tk.Button(frame_btns, text="Run", command=self.run)
-        self.run_btn.grid(row=0, column=1, padx=5, pady=5)
+        self.run_btn.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
         # Enter Button (Initially Disabled)
         self.enter_btn = tk.Button(frame_enter, text="Enter", command=self.process_user_input, state=tk.DISABLED)
