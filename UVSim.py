@@ -65,7 +65,10 @@ class UVSim:
             match operation_code:
                 case 10:
                     #Call READ
-                    self.memory[operand] = int(input("Enter a number: "))
+                    if input_callback:
+                        self.memory[operand] = input_callback()  # Fetch from GUI
+                    else:
+                        self.memory[operand] = int(input("Enter a number: "))
                 case 11:
                     #Call WRITE
                     print(f"Output: {self.memory[operand]}")
