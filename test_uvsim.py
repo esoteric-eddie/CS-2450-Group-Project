@@ -22,12 +22,10 @@ def test_registers(uvsim):
     assert uvsim.instruction_register == 0
 
 # -------- METHOD TESTS --------
-def test_load_file(uvsim, monkeypatch):
+def test_load_file(uvsim):
     """ Check if test file is read correctly """
     # Mock input to return test file
-    monkeypatch.setattr("builtins.input", lambda _: str(test_file1))
-
-    uvsim.load_program()
+    uvsim.load_program(test_file1)
 
     assert uvsim.memory[:len(test_file_memory)] == test_file_memory
 
