@@ -4,6 +4,7 @@ scripts/__init__.py
 scripts/main.py
 src/UVSim.py
 src/__init__.py
+src/gui.py
 tests/__init__.py
 tests/test_uvsim.py
 uvsim.egg-info/PKG-INFO
