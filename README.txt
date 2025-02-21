@@ -10,8 +10,9 @@ UVSim is a command-line application that simulates a basic virtual machine to ex
 ## Running the Application
 1. Open a terminal or command prompt.
 2. Navigate to the setup.py
-3. type: pip install -e .
+3. type: [pip install -e .] just what is in the brackets, not the brackets, into the terminal
+    - It is up to the user if they want to install in a virtual envrionment, but it is recommended.
 5. Run the program using: python3 scripts/main.py  
-6. The program will prompt you to enter a file name containing BasicML instructions.
+6. The program will display a text box to enter a file name containing BasicML instructions. Once you have typed the name of your file hit the load button.
     - Each instruction in the file should be a four-digit signed decimal number (Example: +1010), each on new line.
-7. The simulator will then execute the program, processing each instruction.
+7. Once you have loaded your file, hit the run button. The simulator will then execute the program, processing each instruction.
