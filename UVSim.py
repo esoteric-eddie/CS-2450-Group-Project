@@ -47,7 +47,7 @@ class UVSim:
             print(f"ERROR: Memory access out of bounds (Address: {operand}).")
             exit(1)  # Stop execution
     
-    def execute(self):
+    def execute(self, input_callback=None):
         #start at the first memory location, starting operation code is nothing, starting operand is nothing.
         #first two digits of word
         operation_code = 00
