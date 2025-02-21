@@ -44,7 +44,7 @@ class SimGUI:
 
         self.out_output = tk.Entry(root, width=40, state='readonly')
         self.out_output.grid(row=4, column=1, padx=5, pady=5, sticky="w", columnspan=1)
-
+        
 
         #User input value - needs an event added to it. 
         self.input_entry = tk.Label(root, text="Input:")
@@ -52,6 +52,10 @@ class SimGUI:
         self.input_val = tk.Entry(root, width=40)
         self.input_val.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
+        # Run button
+        self.run_btn = tk.Button(root, text="Run", command=self.run)
+        self.run_btn.grid(row=6, column=1, padx=10, pady=5)
+        
         # Memory locations
         self.memory_label = tk.Label(root, text="Memory:")
         self.memory_label.grid(row=0, column=2, padx=10, pady=5, sticky="w")
@@ -157,5 +161,16 @@ class SimGUI:
 
         save_button = tk.Button(edit_window, text="Save", command=save_memory)
         save_button.grid(row=2, column=1, padx=10, pady=5)
-        
+
+    def run(self):
+        """Execute the loaded program and update GUI."""
+        try:
+            self.processor.execute()  # Run the simulation
+            self.update_pc()  # Update program counter in UI
+            self.update_accumulator()  # Update accumulator in UI
+            self.load_memory()  # Refresh memory listbox
+            self.update_output("Execution completed.")
+        except Exception as e:
+            self.update_output(f"Execution Error: {str(e)}")
+
         
