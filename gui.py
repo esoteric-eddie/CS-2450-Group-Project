@@ -46,7 +46,7 @@ class SimGUI:
         self.out_output.grid(row=4, column=1, padx=5, pady=5, sticky="w", columnspan=1)
         
 
-        #User input value - needs an event added to it. 
+        #User input value
         self.input_entry = tk.Label(root, text="Input:")
         self.input_entry.grid(row=5, column=0, padx=(10, 5), pady=5, sticky="w")
         
