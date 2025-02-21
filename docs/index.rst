@@ -53,8 +53,8 @@ a. Actor(s): UVSim
 b. System:
     i. UVSim writes the value store in the accumulator variable to the specified
     memory location
-
 c. Goal: Store the accumulator's value in a specified memory location
+
 7. Arithmetic Operation (ADD, SUBTRACT, DIVIDE, MULTIPLY)
 a. Actor(s): UVSim
 b. System:
