@@ -101,7 +101,7 @@ class SimGUI:
         self.memory_frame = tk.Frame(root)
         self.memory_frame.grid(row=1, column=1, rowspan=6, padx=15, pady=5, sticky="nsew")
 
-        self.memory_listbox = tk.Listbox(self.memory_frame, width=15, height=10)
+        self.memory_listbox = tk.Listbox(self.memory_frame, width=15, height=10, selectmode=tk.EXTENDED)
         self.memory_scroll = tk.Scrollbar(self.memory_frame, orient=tk.VERTICAL)
 
         self.memory_listbox.config(yscrollcommand=self.memory_scroll.set)
@@ -112,6 +112,15 @@ class SimGUI:
 
         # Double click to edit
         self.memory_listbox.bind("<Double-Button-1>", self.edit_memory)
+
+        # Context menu
+        self.memory_menu = tk.Menu(root, tearoff=0)
+        self.memory_menu.add_command(label="Cut", command=self.cut_memory)
+        self.memory_menu.add_command(label="Copy", command=self.copy_memory)
+        self.memory_menu.add_command(label="Paste", command=self.paste_memory)
+
+        # Bind right-click to show context menu
+        self.memory_listbox.bind("<Button-3>", self.show_memory_menu)
 
         # Load memory on start
         self.load_memory()
@@ -214,6 +223,89 @@ class SimGUI:
 
         save_button = tk.Button(edit_window, text="Save", command=save_memory)
         save_button.grid(row=2, column=1, padx=10, pady=5)
+
+# CUT, COPY, PASTE FUNCTIONALITY
+    def show_memory_menu(self, event):
+        """ Right-click for menu in memory listbox"""
+        try:
+            self.memory_menu.post(event.x_root, event.y_root)
+        except tk.TclError:
+            pass
+
+    def copy_memory(self):
+        """ Copy selected values"""
+        selected_rows = self.memory_listbox.curselection()
+        if selected_rows:
+            # Get values only and put in list with newlines
+            memory_values = []
+            for i in selected_rows:
+                row_text = self.memory_listbox.get(i)
+                value = row_text.split(": ")[1]
+                memory_values.append(value) 
+            copy_text = "\n".join(memory_values)
+
+            self.root.clipboard_clear()
+            self.root.clipboard_append(copy_text)
+            self.root.update()
+
+    def cut_memory(self):
+        """ Cut selected values"""
+        selected_rows = self.memory_listbox.curselection()
+        if selected_rows:
+            # Get values only and put in list with newlines
+            memory_values = []
+            for i in selected_rows:
+                row_text = self.memory_listbox.get(i)
+                value = row_text.split(": ")[1]
+                memory_values.append(value) 
+            copy_text = "\n".join(memory_values)
+
+            self.root.clipboard_clear()
+            self.root.clipboard_append(copy_text)
+            self.root.update()
+
+            # Set cut values to 0
+            for i in selected_rows:
+                self.processor.memory[i] = 0
+            self.load_memory()
+
+    def paste_memory(self):
+        """ Paste clipboard into memory starting from first selected"""
+        selected_rows = self.memory_listbox.curselection()
+        if not selected_rows:
+            self.update_output("No memory location selected.")
+            return
+
+        try:
+            clipboard_text = self.root.clipboard_get().strip()
+            new_values = clipboard_text.split("\n")
+
+            # Convert valid numbers from clipboard
+            numeric_values = []
+            for value in new_values:
+                try:
+                    num = int(value.strip())
+                    if -9999 <= num <= 9999:  # Set range
+                        numeric_values.append(num)
+                except ValueError:
+                    continue
+
+            if not numeric_values:
+                self.update_output("Clipboard contains no valid numbers.")
+                return
+
+            # Paste starting at first selected index
+            start_index = selected_rows[0]  
+            for i, num in enumerate(numeric_values):
+                memory_index = start_index + i
+                if memory_index >= 100:  # Stop if out of bounds
+                    break
+                self.processor.memory[memory_index] = num
+
+            self.load_memory()  # Refresh UI
+
+        except tk.TclError:
+            self.update_output("Clipboard is empty or inaccessible.")
 
     def run(self):
         """Starts execution step by step, ensuring UI updates correctly"""
