@@ -3,6 +3,7 @@ from tkinter import ttk, colorchooser
 import json
 import os
 from src import UVSim
+from tkinter import filedialog
 
 class SimGUI:
     def __init__(self, root):
@@ -75,9 +76,13 @@ class SimGUI:
         self.input_label = tk.Label(frame_lf, text="Enter text file:")
         self.input_label.grid(row=0, column=0, padx=(10, 5), pady=5, sticky="w")
 
-        # Input Field (enter text file)
-        self.input_field = tk.Entry(frame_lf, width=35)
+        # Input Field (enter text file) - reduced width slightly
+        self.input_field = tk.Entry(frame_lf, width=30)
         self.input_field.grid(row=0, column=1, padx=4, pady=5, sticky="w")
+
+        # Add Browse Button
+        self.browse_button = tk.Button(frame_lf, text="Browse", command=self.browse_file)
+        self.browse_button.grid(row=0, column=2, padx=4, pady=5, sticky="w")
 
         # Program Counter Output
         self.pc_label = tk.Label(frame_pca, text="Program Counter:")
@@ -195,6 +200,19 @@ class SimGUI:
         style.configure("TButton", background=primary, foreground=off_color)
         style.configure("TFrame", background=primary)
         style.configure("TLabel", background=primary, foreground=off_color)
+
+    def browse_file(self):
+        """ Opens a file dialog and inserts the selected file path into the input field """
+        filetypes = [("Text files", "*.txt"), ("All files", "*.*")]
+        filename = filedialog.askopenfilename(
+            title="Select a program file",
+            filetypes=filetypes,
+            initialdir="."
+        )
+        
+        if filename:  # If a file was selected (not cancelled)
+            self.input_field.delete(0, tk.END)
+            self.input_field.insert(0, filename)
 
 
     # Method to find a file and load it into UVSim.py
