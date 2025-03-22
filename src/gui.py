@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, colorchooser
 import json
 import os
-import UVSim
+from src import UVSim
 
 class SimGUI:
     def __init__(self, root):
@@ -13,7 +13,7 @@ class SimGUI:
         self.current_operand = None  # Store the operand for READ operation
 
         # Load color scheme
-        self.load_color_scheme()
+        #self.load_color_scheme()
 
 
         # Grid config
@@ -24,46 +24,46 @@ class SimGUI:
 
         """Frames"""
         #frame for file loader (Row 0)
-        frame_lf = tk.Frame(root)
+        frame_lf = ttk.Frame(root)
         frame_lf.grid(row=0, column=0, sticky='nsew', padx=10)
         frame_lf.columnconfigure(0, weight=1)
         frame_lf.rowconfigure(1, weight=1)
 
         # Frame for load and run buttons (Row 1)
-        frame_btns = tk.Frame(root)
+        frame_btns = ttk.Frame(root)
         frame_btns.grid(row=1, column=0, sticky='nsew', padx = 10)
         frame_btns.columnconfigure(0, weight=1)
         frame_btns.rowconfigure(1, weight=1)
 
         # Frame for PC and Accumulator (Row 2)
-        frame_pca = tk.Frame(root)
+        frame_pca = ttk.Frame(root)
         frame_pca.grid(row=2, column=0, sticky='nsew', padx=10)
         frame_pca.columnconfigure(0, weight=1)
         frame_pca.rowconfigure(1, weight=1)
 
         #Frame for Output/Input fields (Row 3)
-        frame_inout = tk.Frame(root)
+        frame_inout = ttk.Frame(root)
         frame_inout.grid(row=3, column=0, sticky='nsew', padx=10)
         frame_inout.columnconfigure(0, weight=1)
         frame_inout.rowconfigure(1, weight=1)
 
         # Frame for Enter Button (Row 4)
-        frame_enter = tk.Frame(root)
+        frame_enter = ttk.Frame(root)
         frame_enter.grid(row=4, column=0, sticky='nsew', padx=10)
         frame_enter.columnconfigure(0, weight=1)
         frame_enter.rowconfigure(1, weight=1)
 
         """Buttons"""
         # Load Button
-        self.load_button = tk.Button(frame_btns, text="Load File", command=self.load_file)
+        self.load_button = ttk.Button(frame_btns, text="Load File", command=self.load_file)
         self.load_button.grid(row=0, column=0)
 
         # Run Button
-        self.run_btn = tk.Button(frame_btns, text="Run", command=self.run)
+        self.run_btn = ttk.Button(frame_btns, text="Run", command=self.run)
         self.run_btn.grid(row=0, column=1, padx=5, pady=5)
 
         # Enter Button (Initially Disabled)
-        self.enter_btn = tk.Button(frame_enter, text="Enter", command=self.process_user_input, state=tk.DISABLED)
+        self.enter_btn = ttk.Button(frame_enter, text="Enter", command=self.process_user_input, state=tk.DISABLED)
         self.enter_btn.grid(row=0, column=1, padx=5, pady=5)
 
         """Color Theme Selector"""
@@ -109,7 +109,7 @@ class SimGUI:
         self.memory_label = tk.Label(root, text="Memory:")
         self.memory_label.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
-        self.memory_frame = tk.Frame(root)
+        self.memory_frame = ttk.Frame(root)
         self.memory_frame.grid(row=1, column=1, rowspan=6, padx=15, pady=5, sticky="nsew")
 
         self.memory_listbox = tk.Listbox(self.memory_frame, width=15, height=10, selectmode=tk.EXTENDED)
@@ -180,17 +180,15 @@ class SimGUI:
         self.apply_color_scheme()
 
     def apply_color_scheme(self):
-        """Applies the selected color scheme to the UI."""
         primary = self.color_scheme.get("primary", "#4C721D")
         off_color = self.color_scheme.get("off_color", "#FFFFFF")
 
-        self.root.configure(bg=primary)
+        style = ttk.Style()
+        style.configure("TButton", background=primary, foreground=off_color)
+        style.configure("TFrame", background=primary)
+        style.configure("TLabel", background=primary, foreground=off_color)
 
-        for widget in [self.load_button, self.run_btn, self.enter_btn, self.color_button]:
-            widget.configure(style="TButton")
-    
-        for frame in [self.root]:
-            frame.configure(style="TFrame")
+        self.root.configure(bg=primary)
 
         # Apply ttk style changes
         style = ttk.Style()
