@@ -403,7 +403,7 @@ class SimGUI:
 
             # Stop execution if HALT is reached or program is empty
             if self.processor.memory[self.processor.program_counter] == 4300 or self.processor.program_counter > 98:
-                self.update_output("Execution completed.")
+                self.update_output("Execution completed. You may exit or load another file.")
                 return
 
             # Check if the next instruction is READ (10XX)
