@@ -1,4 +1,3 @@
-from src import UVSim
 from src import gui
 import tkinter as tk
 

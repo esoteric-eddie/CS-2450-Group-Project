@@ -1,5 +1,8 @@
 import tkinter as tk
-from src import UVSim
+from tkinter import ttk, colorchooser
+import json
+import os
+import UVSim
 
 class SimGUI:
     def __init__(self, root):
@@ -8,6 +11,10 @@ class SimGUI:
         self.processor = UVSim.UVSim()
 
         self.current_operand = None  # Store the operand for READ operation
+
+        # Load color scheme
+        self.load_color_scheme()
+
 
         # Grid config
         root.columnconfigure(0, weight=1)
@@ -58,6 +65,10 @@ class SimGUI:
         # Enter Button (Initially Disabled)
         self.enter_btn = tk.Button(frame_enter, text="Enter", command=self.process_user_input, state=tk.DISABLED)
         self.enter_btn.grid(row=0, column=1, padx=5, pady=5)
+
+        """Color Theme Selector"""
+        self.color_button = ttk.Button(root, text="Choose Theme", command=self.choose_color_scheme)
+        self.color_button.grid(row=6, column=0, padx=10, pady=10)
 
         """Input/Output Fields"""
         # Input Label (Enter text file)
@@ -127,6 +138,65 @@ class SimGUI:
 
         # Bind Enter Key to process_user_input
         self.input_val.bind("<Return>", self.process_user_input)  # Bind Enter key to input processing
+
+        self.load_color_scheme()
+
+    def choose_color_scheme(self):
+        """Opens a color picker for users to select primary and off colors."""
+        primary_color = colorchooser.askcolor(title="Choose Primary Color")[1]
+        if not primary_color:
+            return
+
+        off_color = colorchooser.askcolor(title="Choose Off-Color")[1]
+        if not off_color:
+            return
+
+        self.save_color_scheme(primary_color, off_color)
+
+    def save_color_scheme(self, primary, off_color):
+        """Saves the selected colors to a configuration file."""
+        self.color_scheme = {"primary": primary, "off_color": off_color}
+        with open("color_config.json", "w") as f:
+            json.dump(self.color_scheme, f)
+        self.apply_color_scheme()
+
+    def load_color_scheme(self):
+        """Loads the color scheme from a file or applies the default."""
+        default_scheme = {
+            "primary": "#4C721D",  # UVU dark green
+            "off_color": "#FFFFFF" # White
+        }
+        config_path = "color_config.json"
+
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, "r") as f:
+                    self.color_scheme = json.load(f)
+            except json.JSONDecodeError:
+                self.color_scheme = default_scheme
+        else:
+            self.color_scheme = default_scheme
+
+        self.apply_color_scheme()
+
+    def apply_color_scheme(self):
+        """Applies the selected color scheme to the UI."""
+        primary = self.color_scheme.get("primary", "#4C721D")
+        off_color = self.color_scheme.get("off_color", "#FFFFFF")
+
+        self.root.configure(bg=primary)
+
+        for widget in [self.load_button, self.run_btn, self.enter_btn, self.color_button]:
+            widget.configure(style="TButton")
+    
+        for frame in [self.root]:
+            frame.configure(style="TFrame")
+
+        # Apply ttk style changes
+        style = ttk.Style()
+        style.configure("TButton", background=primary, foreground=off_color)
+        style.configure("TFrame", background=primary)
+        style.configure("TLabel", background=primary, foreground=off_color)
 
 
     # Method to find a file and load it into UVSim.py
