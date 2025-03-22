@@ -422,12 +422,17 @@ class SimGUI:
         """Processes user input and resumes execution"""
         user_input = self.input_val.get().strip()
 
-        if not user_input.isdigit() or len(user_input) != 4:
-            self.update_output("Invalid input! Enter a four-digit number.")
+        try:
+            value = int(user_input)
+            if not -9999 <= value <= 9999:
+                raise ValueError
+        except ValueError:
+            self.update_output("Invalid input! Enter a signed four-digit number (e.g., +1234 or -5678).")
             return
 
-        self.processor.memory[self.current_operand] = int(user_input)  # Store input in memory
-        self.update_output(f"Stored {user_input} at memory[{self.current_operand}]. Resuming execution...")
+        # Store signed input in memory
+        self.processor.memory[self.current_operand] = value
+        self.update_output(f"Stored {value:+05} at memory[{self.current_operand}]. Resuming execution...")
 
         # Disable input field and button
         self.input_val.config(state=tk.DISABLED)
@@ -436,6 +441,7 @@ class SimGUI:
         # Resume execution from the next instruction
         self.processor.program_counter += 1
         self.run()  # Continue execution
+
 
     def handle_read_instruction(self, operand):
         """Handles READ instruction by enabling input and pausing execution"""
