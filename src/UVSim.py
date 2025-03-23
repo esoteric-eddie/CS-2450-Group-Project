@@ -61,8 +61,10 @@ class UVSim:
             case 10:  # READ instruction (pause execution); ensures user can enter values when prompted
                 if input_callback:
                     input_callback(operand)  # Tell GUI to get input
-                    return  # Stop execution until input is received
+                else:
+                    value = int(input("Enter a number: "))  # Get input from terminal
 
+                self.memory[operand] = value
             case 11:  # WRITE instruction
                 print(f"Output: {self.memory[operand]}")
 

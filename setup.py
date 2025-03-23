@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name="uvsim",
     version="0.1.1",
-    packages=find_packages(),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=[
         'colorama==0.4.6',
         'iniconfig==2.0.0',
