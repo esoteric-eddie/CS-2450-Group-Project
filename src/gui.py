@@ -403,7 +403,7 @@ class SimGUI:
 
             # Stop execution if HALT is reached or program is empty
             if self.processor.memory[self.processor.program_counter] == 4300 or self.processor.program_counter > 98:
-                self.update_output("Execution completed. You may exit or load another file.")
+                self.update_output("Execution completed.")
                 return
 
             # Check if the next instruction is READ (10XX)
@@ -416,23 +416,19 @@ class SimGUI:
             self.root.after(500, self.run)
 
         except Exception as e:
-            self.update_output(f"Execution Error: {str(e)}")
+            # self.update_output(f"Execution Error: {str(e)}")
+            pass
 
     def process_user_input(self, event=None):
         """Processes user input and resumes execution"""
         user_input = self.input_val.get().strip()
 
-        try:
-            value = int(user_input)
-            if not -9999 <= value <= 9999:
-                raise ValueError
-        except ValueError:
-            self.update_output("Invalid input! Enter a signed four-digit number (e.g., +1234 or -5678).")
+        if not user_input.isdigit() or len(user_input) != 4:
+            self.update_output("Invalid input! Enter a four-digit number.")
             return
 
-        # Store signed input in memory
-        self.processor.memory[self.current_operand] = value
-        self.update_output(f"Stored {value:+05} at memory[{self.current_operand}]. Resuming execution...")
+        self.processor.memory[self.current_operand] = int(user_input)  # Store input in memory
+        self.update_output(f"Stored {user_input} at memory[{self.current_operand}]. Resuming execution...")
 
         # Disable input field and button
         self.input_val.config(state=tk.DISABLED)
@@ -441,7 +437,6 @@ class SimGUI:
         # Resume execution from the next instruction
         self.processor.program_counter += 1
         self.run()  # Continue execution
-
 
     def handle_read_instruction(self, operand):
         """Handles READ instruction by enabling input and pausing execution"""

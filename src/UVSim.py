@@ -62,7 +62,11 @@ class UVSim:
                 if input_callback:
                     input_callback(operand)  # Tell GUI to get input
                 else:
-                    value = int(input("Enter a number: "))  # Get input from terminal
+                    try:
+                        value = int(input("Enter a number: "))  # Get input from terminal
+                    except ValueError:
+                        print("ERROR: Invalid input. Please enter a valid number.")
+                        return
 
                 self.memory[operand] = value
             case 11:  # WRITE instruction
