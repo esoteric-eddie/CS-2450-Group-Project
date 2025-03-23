@@ -423,8 +423,12 @@ class SimGUI:
         """Processes user input and resumes execution"""
         user_input = self.input_val.get().strip()
 
-        if not user_input.isdigit() or len(user_input) != 4:
-            self.update_output("Invalid input! Enter a four-digit number.")
+        try:
+            value = int(user_input)
+            if not -9999 <= value <= 9999:
+                raise ValueError
+        except ValueError:
+            self.update_output("Invalid input! Enter a signed four-digit number (e.g., +1234 or -5678).")
             return
 
         self.processor.memory[self.current_operand] = int(user_input)  # Store input in memory

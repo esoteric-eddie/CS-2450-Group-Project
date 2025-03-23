@@ -241,7 +241,7 @@ def test_read_instruction(uvsim, monkeypatch):
 def test_write_instruction(uvsim, capsys):
     """ Test WRITE instruction """
     uvsim.memory[20] = 5678
-    uvsim.memory[0] = 1100 + 20  # WRITE instruction
+    uvsim.memory[0] = 1120  # WRITE instruction
     uvsim.memory[1] = 4300
 
     uvsim.execute()
