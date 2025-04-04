@@ -1,7 +1,7 @@
 import pytest
 from src import UVSim
 
-test_file1 = "Test1.txt"
+test_file1 = "tests/Test1.txt"
 test_file_memory = [+1007,+1008,+2007,+3008,+2109,+1109,+4300,+0000,+0000,+0000,-99999]
 
 @pytest.fixture
@@ -25,9 +25,8 @@ def test_registers(uvsim):
 def test_load_file(uvsim, monkeypatch):
     """ Check if test file is read correctly """
     # Mock input to return test file
-    monkeypatch.setattr("builtins.input", lambda _: str(test_file1))
 
-    uvsim.load_program()
+    uvsim.load_program(test_file1)
 
     assert uvsim.memory[:len(test_file_memory)] == test_file_memory
 
@@ -52,14 +51,16 @@ def test_execute_invalid_opcode(uvsim):
     """ Test if invalid opcodes are ignored """
     uvsim.memory[0] = 9999
     uvsim.memory[1] = 4300
-    uvsim.execute()
+
+    with pytest.raises(ValueError, match="ERROR: Invalid command."):
+        uvsim.execute()
 
 def test_execute_no_halt(uvsim):
     """ Test if execution stops with no halt """
     uvsim.memory[0] = 9999
-    uvsim.execute()
 
-    assert uvsim.program_counter == 99
+    with pytest.raises(ValueError, match="ERROR: Invalid command."):
+        uvsim.execute()
 
 # -------- OPERATION TESTS --------
 def test_store(uvsim):
@@ -179,18 +180,15 @@ def test_divide_by_zero(uvsim, capsys):
     uvsim.accumulator = 10
     uvsim.memory[10] = 0
 
-    uvsim.memory[0] = +3310  # Attempt to divide by zero
+    uvsim.memory[0] = +3310  # divide by zero
     uvsim.memory[1] = 4300
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(ZeroDivisionError, match="ERROR: Division by zero"):
         uvsim.execute()
-
-    captured = capsys.readouterr()
-    assert "ERROR: Division by zero" in captured.out
 
 def test_branch(uvsim):
     """ Test BRANCH operation """
-    uvsim.memory[0] = +4010  # BRANCH to memory address 10
+    uvsim.memory[0] = +4011  # BRANCH to memory address 11
     uvsim.memory[1] = 4300
     uvsim.memory[11] = 4300
     uvsim.execute()
@@ -200,7 +198,7 @@ def test_branch(uvsim):
 def test_branch_negative(uvsim):
     """ Test BRANCHNEG operation """
     uvsim.accumulator = -1
-    uvsim.memory[0] = +4110  # BRANCHNEG to memory[10]
+    uvsim.memory[0] = +4111  # BRANCHNEG to memory[11]
     uvsim.memory[1] = 4300
     uvsim.memory[11] = 4300
 
@@ -210,13 +208,45 @@ def test_branch_negative(uvsim):
 def test_branch_zero(uvsim):
     """ Test BRANCHZERO operation """
     uvsim.accumulator = 0
-    uvsim.memory[0] = +4210  # BRANCHZERO to memory[10]
+    uvsim.memory[0] = +4211  # BRANCHZERO to memory[11]
     uvsim.memory[1] = 4300
     uvsim.memory[11] = 4300
 
     uvsim.execute()
     assert uvsim.program_counter == 11
 
+def test_load_instruction(uvsim):
+    """ Test LOAD operation """
+    uvsim.memory[30] = 4321
+    uvsim.memory[0] = 2030  # LOAD instruction
+    uvsim.memory[1] = 4300
 
+    uvsim.execute()
+
+    assert uvsim.accumulator == 4321
+
+# -------- USER INPUT TESTS --------
+def test_read_instruction(uvsim, monkeypatch):
+    """ Test READ instruction """
+    input_value = "1234\n"  # test user input
+    monkeypatch.setattr("builtins.input", lambda operand: input_value.strip())  # Strip newline
+
+    uvsim.memory[0] = 1005  # READ into memory[5]
+    uvsim.memory[1] = 4300
+
+    uvsim.execute()
+
+    assert uvsim.memory[5] == 1234, f"Expected 1234, but got {uvsim.memory[5]}"
+
+def test_write_instruction(uvsim, capsys):
+    """ Test WRITE instruction """
+    uvsim.memory[20] = 5678
+    uvsim.memory[0] = 1120  # WRITE instruction
+    uvsim.memory[1] = 4300
+
+    uvsim.execute()
+
+    captured = capsys.readouterr()
+    assert "Output: 5678" in captured.out
 # -------- TEST FILE TESTS --------
 test_file = [+1009,+1010,+2009,+3110,+4107,+1109,+4300,+1110,+4300,+0000,+0000,-99999]
