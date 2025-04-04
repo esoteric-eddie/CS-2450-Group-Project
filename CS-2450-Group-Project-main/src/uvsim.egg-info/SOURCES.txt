@@ -1,8 +1,0 @@
-README.txt
-setup.py
-src/uvsim.egg-info/PKG-INFO
-src/uvsim.egg-info/SOURCES.txt
-src/uvsim.egg-info/dependency_links.txt
-src/uvsim.egg-info/requires.txt
-src/uvsim.egg-info/top_level.txt
-tests/test_uvsim.py
