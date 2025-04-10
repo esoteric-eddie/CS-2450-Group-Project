@@ -1,7 +1,7 @@
 import pytest
-from UVSim import UVSim
+from src import UVSim
 
-test_file1 = "Test1.txt"
+test_file1 = "tests/Test1.txt"
 test_file_memory = [+1007,+1008,+2007,+3008,+2109,+1109,+4300,+0000,+0000,+0000,-99999]
 
 @pytest.fixture
@@ -27,6 +27,7 @@ def test_load_file(uvsim, monkeypatch):
     # Mock input to return test file
 
     uvsim.load_program(test_file1)
+
     assert uvsim.memory[:len(test_file_memory)] == test_file_memory
 
 def test_fetch_word(uvsim):

@@ -138,12 +138,6 @@ class SimGUI:
         # Bind right-click to show context menu
         self.memory_listbox.bind("<Button-3>", self.show_memory_menu)
 
-        # Use shortcuts for copy/paste
-        self.root.bind('<Control-c>', self.copy_memory)
-        self.memory_listbox.bind("<Control-c>", lambda e: self.copy_memory())
-        self.memory_listbox.bind("<Control-x>", lambda e: self.cut_memory())
-        self.memory_listbox.bind("<Control-v>", lambda e: self.paste_memory())
-
         # Load memory on start
         self.load_memory()
 
@@ -324,23 +318,21 @@ class SimGUI:
         except tk.TclError:
             pass
 
-    def copy_memory(self, event=None):
-        """Copy only values (not addresses) from selected memory rows."""
+    def copy_memory(self):
+        """ Copy selected values"""
         selected_rows = self.memory_listbox.curselection()
         if selected_rows:
+            # Get values only and put in list with newlines
             memory_values = []
             for i in selected_rows:
                 row_text = self.memory_listbox.get(i)
-                parts = row_text.strip().split(": ")
-                if len(parts) == 2:
-                    value = parts[1].strip()
-                    memory_values.append(value)
+                value = row_text.split(": ")[1]
+                memory_values.append(value) 
             copy_text = "\n".join(memory_values)
 
             self.root.clipboard_clear()
             self.root.clipboard_append(copy_text)
             self.root.update()
-
 
     def cut_memory(self):
         """ Cut selected values"""
@@ -369,9 +361,10 @@ class SimGUI:
         if not selected_rows:
             self.update_output("No memory location selected.")
             return
+
         try:
             clipboard_text = self.root.clipboard_get().strip()
-            new_values = clipboard_text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+            new_values = clipboard_text.split("\n")
 
             # Convert valid numbers from clipboard
             numeric_values = []
