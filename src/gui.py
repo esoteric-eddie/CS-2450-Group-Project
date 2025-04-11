@@ -138,6 +138,12 @@ class SimGUI:
         # Bind right-click to show context menu
         self.memory_listbox.bind("<Button-3>", self.show_memory_menu)
 
+        # Use shortcuts for copy/paste
+        self.root.bind('<Control-c>', self.copy_memory)
+        self.memory_listbox.bind("<Control-c>", lambda e: self.copy_memory())
+        self.memory_listbox.bind("<Control-x>", lambda e: self.cut_memory())
+        self.memory_listbox.bind("<Control-v>", lambda e: self.paste_memory())
+
         # Load memory on start
         self.load_memory()
 
@@ -318,21 +324,23 @@ class SimGUI:
         except tk.TclError:
             pass
 
-    def copy_memory(self):
-        """ Copy selected values"""
+    def copy_memory(self, event=None):
+        """Copy selected values"""
         selected_rows = self.memory_listbox.curselection()
         if selected_rows:
-            # Get values only and put in list with newlines
             memory_values = []
             for i in selected_rows:
                 row_text = self.memory_listbox.get(i)
-                value = row_text.split(": ")[1]
-                memory_values.append(value) 
+                parts = row_text.strip().split(": ")
+                if len(parts) == 2:
+                    value = parts[1].strip()
+                    memory_values.append(value)
             copy_text = "\n".join(memory_values)
 
             self.root.clipboard_clear()
             self.root.clipboard_append(copy_text)
             self.root.update()
+
 
     def cut_memory(self):
         """ Cut selected values"""
@@ -371,7 +379,7 @@ class SimGUI:
             for value in new_values:
                 try:
                     num = int(value.strip())
-                    if -9999 <= num <= 9999:  # Set range
+                    if -999999 <= num <= 999999:  # Set range
                         numeric_values.append(num)
                 except ValueError:
                     continue
@@ -384,7 +392,7 @@ class SimGUI:
             start_index = selected_rows[0]  
             for i, num in enumerate(numeric_values):
                 memory_index = start_index + i
-                if memory_index >= 100:  # Stop if out of bounds
+                if memory_index >= 250:  # Stop if out of bounds
                     break
                 self.processor.memory[memory_index] = num
 
@@ -402,7 +410,7 @@ class SimGUI:
             self.load_memory()
 
             # Stop execution if HALT is reached or program is empty
-            if self.processor.memory[self.processor.program_counter] == 4300 or self.processor.program_counter > 98:
+            if self.processor.memory[self.processor.program_counter] == 4300 or self.processor.program_counter > 249:
                 self.update_output("Execution completed.")
                 return
 
@@ -425,7 +433,7 @@ class SimGUI:
 
         try:
             value = int(user_input)
-            if not -9999 <= value <= 9999:
+            if not -999999 <= value <= 999999:
                 raise ValueError
         except ValueError:
             self.update_output("Invalid input! Enter a signed four-digit number (e.g., +1234 or -5678).")
