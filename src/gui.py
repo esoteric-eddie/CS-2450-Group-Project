@@ -63,6 +63,10 @@ class SimGUI:
         self.run_btn = ttk.Button(frame_btns, text="Run", command=self.run)
         self.run_btn.grid(row=0, column=1, padx=5, pady=5)
 
+        # Convert Button
+        self.convert_btn = ttk.Button(frame_btns, text="Convert to 6-Digit", command=self.convert_file_to_6_digit)
+        self.convert_btn.grid(row=0, column=2, padx=5, pady=5)
+
         # Enter Button (Initially Disabled)
         self.enter_btn = ttk.Button(frame_enter, text="Enter", command=self.process_user_input, state=tk.DISABLED)
         self.enter_btn.grid(row=0, column=1, padx=5, pady=5)
@@ -460,3 +464,20 @@ class SimGUI:
         self.enter_btn.config(state=tk.NORMAL)
         self.input_val.delete(0, tk.END)
         self.input_val.focus_set()  # Focus on input field
+
+
+    def convert_file_to_6_digit(self):
+        """Calls UVSim to convert a selected legacy file to 6-digit format."""
+        file = self.input_field.get().strip()
+
+        if not file:
+            self.update_output("No file name entered to convert.")
+            return
+
+        try:
+            self.processor.convert_file(file)
+            self.update_output("File converted to 6-digit format successfully.")
+        except Exception as e:
+            self.update_output(f"Conversion Error: {str(e)}")
+
+        self.load_file()
