@@ -525,13 +525,13 @@ class SimGUI:
         # Output Message Field
         out_label = ttk.Label(frame_inout, text="Output:", foreground="black")
         out_label.grid(row=0, column=0, padx=(10, 5), pady=5, sticky="w")
-        out_output = ttk.Entry(frame_inout, width=35, state='readonly')
+        out_output = ttk.Entry(frame_inout, width=50, state='readonly')
         out_output.grid(row=0, column=1, padx=5, pady=5, sticky="w", columnspan=1)
 
         # Input field (User input)
         out_label = ttk.Label(frame_inout, text="Input:", foreground="black")
         out_label.grid(row=1, column=0, padx=(10, 5), pady=5, sticky="w")
-        input_val = ttk.Entry(frame_inout, width=35)
+        input_val = ttk.Entry(frame_inout, width=50)
         input_val.grid(row=1, column=1, padx=5, pady=5, sticky="w")
         input_val.bind("<Return>", self.process_user_input)  # Bind Enter key
 
