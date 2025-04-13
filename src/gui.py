@@ -177,7 +177,7 @@ class SimGUI:
         out_output.insert(0, message)
         out_output.config(state='readonly')
 
-    def load_memory(self):
+        def load_memory(self):
         """ Load memory into listbox (per-tab) """
         widgets = self.get_current_tab_widgets()
         memory_listbox = widgets["memory_listbox"]
@@ -185,7 +185,15 @@ class SimGUI:
 
         memory_listbox.delete(0, tk.END)
         for index, value in enumerate(processor.memory):
-            memory_listbox.insert(tk.END, f"{index:02}: {value}")
+            str_val = str(value)
+            if value < 0:
+                # For negative numbers, keep the minus sign and pad the rest
+                formatted_value = '-' + str_val[1:].zfill(5)
+            else:
+                # For positive numbers, pad to 6 digits
+                formatted_value = str_val.zfill(6)
+
+            memory_listbox.insert(tk.END, f"{index:02}: {formatted_value}")
 
     def edit_memory(self, event):
         """ Edit memory on double click """
