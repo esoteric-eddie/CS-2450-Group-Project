@@ -17,6 +17,8 @@ class UVSim:
             for address, line in enumerate(file):
                 # Ensure instructions are properly formatted (four-digit signed decimal)
                 instruction = line.strip()
+                if len(instruction) != 7:
+                    raise Exception("File contains words that aren't 6 digits, if your file is an old 4 digit type, please convert it before loading.")
                 if instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit():
                     # Store instructions in memory starting at address 00
                     self.memory[address] = int(instruction)
