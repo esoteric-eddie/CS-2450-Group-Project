@@ -177,6 +177,8 @@ class SimGUI:
         out_output.insert(0, message)
         out_output.config(state='readonly')
 
+
+
     def load_memory(self):
         """ Load memory into listbox (per-tab) """
         widgets = self.get_current_tab_widgets()
@@ -373,7 +375,7 @@ class SimGUI:
             if not -999999 <= value <= 999999:
                 raise ValueError
         except ValueError:
-            self.update_output("Invalid input! Enter a signed six-digit number (e.g., +123409 or -567847).")
+            self.update_output("Invalid input! Enter a signed six-digit number (e.g., +1234 or -5678).")
             return
 
         processor.memory[self.current_operand] = int(user_input)    # Store input in memory
@@ -438,11 +440,16 @@ class SimGUI:
         # Customized frame
         self.create_tab(tab_frame, tab_title)
 
-
     def get_current_tab_widgets(self):
-        tab_id = self.notebook.select()
-        tab_index = self.notebook.index(tab_id)
-        tab_title = f"Tab {tab_index + 1}"
+        tab_id = self.notebook.select()  # get current tab widget ID
+        if not tab_id:
+            raise Exception("No tab is currently selected.")
+
+        tab_title = self.notebook.tab(tab_id, "text")  # get actual tab title like 'Tab 2'
+
+        if tab_title not in self.tabs:
+            raise KeyError(f"Tab title '{tab_title}' not found in self.tabs. Possibly closed.")
+
         return self.tabs[tab_title]
 
     def create_tab(self, frame, title):
@@ -525,13 +532,13 @@ class SimGUI:
         # Output Message Field
         out_label = ttk.Label(frame_inout, text="Output:", foreground="black")
         out_label.grid(row=0, column=0, padx=(10, 5), pady=5, sticky="w")
-        out_output = ttk.Entry(frame_inout, width=35, state='readonly')
+        out_output = ttk.Entry(frame_inout, width=50, state='readonly')
         out_output.grid(row=0, column=1, padx=5, pady=5, sticky="w", columnspan=1)
 
         # Input field (User input)
         out_label = ttk.Label(frame_inout, text="Input:", foreground="black")
         out_label.grid(row=1, column=0, padx=(10, 5), pady=5, sticky="w")
-        input_val = ttk.Entry(frame_inout, width=35)
+        input_val = ttk.Entry(frame_inout, width=50)
         input_val.grid(row=1, column=1, padx=5, pady=5, sticky="w")
         input_val.bind("<Return>", self.process_user_input)  # Bind Enter key
 
@@ -555,7 +562,7 @@ class SimGUI:
         memory_frame = ttk.Frame(frame_memory)
         memory_frame.grid(row=1, column=1, rowspan=6, padx=15, pady=5, sticky="nsew")
 
-        memory_listbox = tk.Listbox(memory_frame, width=20, height=25, selectmode=tk.EXTENDED)
+        memory_listbox = tk.Listbox(memory_frame, width=15, height=10, selectmode=tk.EXTENDED)
         memory_scroll = tk.Scrollbar(memory_frame, orient=tk.VERTICAL)
 
         memory_listbox.config(yscrollcommand=memory_scroll.set)
@@ -603,16 +610,24 @@ class SimGUI:
         # Load memory on start
         self.load_memory()
 
-
     def close_tab(self, frame):
         """Removes the tab and its associated widgets from memory."""
         try:
-            for tab_title, widgets in list(self.tabs.items()):
-                tab_index = self.notebook.index(frame)
-                current_frame = self.notebook.tabs()[tab_index]
-                if self.notebook.tab(current_frame, 'text') == tab_title:
-                    self.notebook.forget(frame)
-                    del self.tabs[tab_title]
+            # Get the title of the tab being closed
+            for tab_id in self.notebook.tabs():
+                if self.notebook.nametowidget(tab_id) == frame:
+                    tab_title = self.notebook.tab(tab_id, "text")
                     break
+            else:
+                raise Exception("Could not find tab title for frame.")
+
+            # Remove tab from notebook and internal tabs dict
+            self.notebook.forget(frame)
+            if tab_title in self.tabs:
+                del self.tabs[tab_title]
+
         except Exception as e:
             print(f"Error closing tab: {e}")
+
+
+
