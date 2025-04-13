@@ -7,6 +7,7 @@ class UVSim:
         self.program_counter = 0  # Define a program counter (PC) to keep track of the current instruction address
         self.instruction_register = 0  # Set up an instruction register (IR) to hold the instruction being executed
         self.out_of_bounds = 248
+        self.halted = False
 
     def load_program(self, filename):
         """Load a BasicML program from a file into memory."""
@@ -16,6 +17,8 @@ class UVSim:
             for address, line in enumerate(file):
                 # Ensure instructions are properly formatted (four-digit signed decimal)
                 instruction = line.strip()
+                if len(instruction) != 7:
+                    raise Exception("File contains words that aren't 6 digits, if your file is an old 4 digit type, please convert it before loading.")
                 if instruction.startswith('+') or instruction.startswith('-') or instruction.isdigit():
                     # Store instructions in memory starting at address 00
                     self.memory[address] = int(instruction)
@@ -24,7 +27,6 @@ class UVSim:
         self.program_counter = 0
 
     def convert_file(self, filename):
-
         converted_lines = []
 
         with open(filename, 'r') as file:
@@ -33,39 +35,43 @@ class UVSim:
                 if (len(line) != 5 and line != "-99999"):
                     print(line)
                     print(len(line))
-                    raise Exception("File contains words longer than 5 digits and doesn't match the old file type.")
+                    raise Exception("File contains words longer than 4 digits and doesn't match the old file type.")
         
         with open(filename, 'r') as file:
             for address, line in enumerate(file):
                 # Ensure instructions are properly formatted (four-digit signed decimal)
                 instruction = line.strip()
-                instruction = instruction[:1] + "0" + instruction[1:]
-                instruction = instruction[:3] + "0" + instruction[3:]
-                instruction += "\n"
-                converted_lines.append(instruction)
+                if instruction == "-99999":
+                    instruction = instruction + "9"
+                    converted_lines.append(instruction)
+                else:
+                    instruction = instruction[:1] + "0" + instruction[1:]
+                    instruction = instruction[:3] + "0" + instruction[3:]
+                    instruction += "\n"
+                    converted_lines.append(instruction)
 
         with open(filename, 'w') as file:
             file.writelines(converted_lines)
 
-    # pass fetch a memory location, get the operation code
     def fetch_word(self, memory_index):
-        # memory should be whatever the name of the variable that our 0-99 memory array is called. return memory at index.
         word = self.memory[memory_index]
 
+        # Only process if word is a valid instruction (positive signed number)
         word_str = str(word)
-        if len(word_str) == 5:
-            # set operation code to the first two numbers, operand to the last two numbers.
-            operation_code = int(word_str[:2])
-            operand = int(word_str[2:5])
-            # return operation code and operand
-            return [operation_code, operand]
+        if len(word_str) == 6:
+            return [99, 999]
+        if word >= 0:
+            opcode = int(word_str[:2])
+            operand = int(word_str[2:])
+            # print(f"[FETCH] Instruction found at {memory_index}: {word} → OpCode: {opcode}, Operand: {operand}")
+            return [opcode, operand]
         else:
-            operation_code = 99
-            operand = 999
-            return [operation_code, operand]
+            # For negative numbers, treat them as data — not instructions
+            # print(f"[FETCH] Data value encountered at {memory_index}: {word} (skipping execution)")
+            return [None, None]
 
     def get_operand(self, operand):
-        """Ensure operand is within valid memory range (0-99)."""
+        """Ensure operand is within valid memory range (0-249)."""
         if 0 <= operand < 249:
             return self.memory[operand]
         else:
@@ -82,12 +88,11 @@ class UVSim:
         operation_code = int(fetched_word[0])
         operand = int(fetched_word[1])
 
-        print(operation_code)
-
         match operation_code:
             case 10:  # READ instruction (pause execution); ensures user can enter values when prompted
                 if input_callback:
                     input_callback(operand)  # Tell GUI to get input
+                    return
                 else:
                     try:
                         value = int(input("Enter a number: "))  # Get input from terminal
@@ -135,8 +140,11 @@ class UVSim:
                 return
 
             case 43:  # HALT
+                self.halted = True
                 print("Program halted.")
-                return  # Stop execution completely
+                return
+                # print("Program halted.")
+                # return  # Stop execution completely
 
             case _:
                 raise ValueError("ERROR: Invalid command.")

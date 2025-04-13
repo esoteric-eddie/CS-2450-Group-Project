@@ -7,10 +7,9 @@ import tkinter as tk
 
 def main():
 
+
     root = tk.Tk()
-    # sim = UVSim.UVSim()
-    # sim.load_program()
-    # sim.execute()
+    root.geometry("950x500")
     gui.SimGUI(root)
     root.mainloop()
 
