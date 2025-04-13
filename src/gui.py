@@ -340,7 +340,9 @@ class SimGUI:
 
             # Check next instruction — if it's a READ, stop here and wait for input
             next_instruction = processor.memory[processor.program_counter]
-            if next_instruction // 100 == 10:
+            opcodeHolder = str(next_instruction // 100)
+            if int(opcodeHolder[:2]) == 10:
+            #if next_instruction // 100 == 10:
                 return  # Pause for input — do NOT schedule another self.run()
 
             self.update_output("Executing next instruction...")

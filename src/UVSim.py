@@ -39,10 +39,14 @@ class UVSim:
             for address, line in enumerate(file):
                 # Ensure instructions are properly formatted (four-digit signed decimal)
                 instruction = line.strip()
-                instruction = instruction[:1] + "0" + instruction[1:]
-                instruction = instruction[:3] + "0" + instruction[3:]
-                instruction += "\n"
-                converted_lines.append(instruction)
+                if instruction == "-99999":
+                    instruction = instruction + "9"
+                    converted_lines.append(instruction)
+                else:
+                    instruction = instruction[:1] + "0" + instruction[1:]
+                    instruction = instruction[:3] + "0" + instruction[3:]
+                    instruction += "\n"
+                    converted_lines.append(instruction)
 
         with open(filename, 'w') as file:
             file.writelines(converted_lines)
