@@ -9,7 +9,7 @@ def main():
 
 
     root = tk.Tk()
-    root.geometry("950x500")
+    root.geometry("950x650")
     gui.SimGUI(root)
     root.mainloop()
 

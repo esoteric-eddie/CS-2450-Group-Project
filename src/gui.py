@@ -555,7 +555,7 @@ class SimGUI:
         memory_frame = ttk.Frame(frame_memory)
         memory_frame.grid(row=1, column=1, rowspan=6, padx=15, pady=5, sticky="nsew")
 
-        memory_listbox = tk.Listbox(memory_frame, width=15, height=10, selectmode=tk.EXTENDED)
+        memory_listbox = tk.Listbox(memory_frame, width=20, height=25, selectmode=tk.EXTENDED)
         memory_scroll = tk.Scrollbar(memory_frame, orient=tk.VERTICAL)
 
         memory_listbox.config(yscrollcommand=memory_scroll.set)
