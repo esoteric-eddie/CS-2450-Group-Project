@@ -375,7 +375,7 @@ class SimGUI:
             if not -999999 <= value <= 999999:
                 raise ValueError
         except ValueError:
-            self.update_output("Invalid input! Enter a signed six-digit number (e.g., +1234 or -5678).")
+            self.update_output("Invalid input! Enter a signed six-digit number (e.g., +123456 or -456789).")
             return
 
         processor.memory[self.current_operand] = int(user_input)    # Store input in memory
