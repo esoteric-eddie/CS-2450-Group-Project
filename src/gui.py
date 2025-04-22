@@ -396,7 +396,7 @@ class SimGUI:
         enter_btn = widgets["enter_btn"]
 
         self.current_operand = operand
-        print(f"[GUI] Waiting for user input for memory[{operand}]")
+        #print(f"[GUI] Waiting for user input for memory[{operand}]")
         self.update_output(f"Enter a 6-digit number for memory location {operand}")
 
         # Enable input field and button
