@@ -33,8 +33,8 @@ class UVSim:
             for address, line in enumerate(file):
                 line = line.strip()
                 if (len(line) != 5 and line != "-99999"):
-                    print(line)
-                    print(len(line))
+                    #print(line)
+                    #print(len(line))
                     raise Exception("File contains words longer than 4 digits and doesn't match the old file type.")
         
         with open(filename, 'r') as file:
