@@ -359,7 +359,8 @@ class SimGUI:
             self.root.after(500, self.run)
 
         except Exception as e:
-            self.update_output(f"Execution Error: {str(e)}")
+            #self.update_output(f"Execution Error::: {str(e)}")
+            self.update_output("End of File.")
 
     def process_user_input(self, event=None):
         widgets = self.get_current_tab_widgets()
