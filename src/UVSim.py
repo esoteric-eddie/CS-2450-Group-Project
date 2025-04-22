@@ -141,7 +141,7 @@ class UVSim:
 
             case 43:  # HALT
                 self.halted = True
-                #print("Program halted.")
+                print("Program halted.")
                 return
                 # print("Program halted.")
                 # return  # Stop execution completely
