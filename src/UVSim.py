@@ -132,12 +132,18 @@ class UVSim:
             case 41:  # BRANCHNEG
                 if self.accumulator < 0:
                     self.program_counter = operand
-                return
+                    return
+                else:
+                    self.program_counter += 1
+                    return
 
             case 42:  # BRANCHZERO
                 if self.accumulator == 0:
                     self.program_counter = operand
-                return
+                    return
+                else:
+                    self.program_counter += 1
+                    return
 
             case 43:  # HALT
                 self.halted = True
