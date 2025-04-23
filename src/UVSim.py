@@ -116,14 +116,14 @@ class UVSim:
             case 31:  # SUBTRACT
                 self.accumulator -= self.get_operand(operand)
 
-            case 32:  # MULTIPLY
-                self.accumulator *= self.get_operand(operand)
-
-            case 33:  # DIVIDE
+            case 32:  # DIVIDE
                 divisor = self.get_operand(operand)
                 if divisor == 0:
                     raise ZeroDivisionError("ERROR: Division by zero. Execution halted.")
                 self.accumulator //= divisor
+                
+            case 33:  # MULTIPLY
+                self.accumulator *= self.get_operand(operand)
 
             case 40:  # BRANCH
                 self.program_counter = operand
